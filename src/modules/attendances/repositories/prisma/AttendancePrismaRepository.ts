@@ -1,5 +1,6 @@
 import { prisma } from "../../../../db/prisma";
 import { AppError } from "../../../../error/AppError";
+import { Attendance } from "../../model/Attendance";
 import { IAttendanceRepository } from "../IAttendanceRepository";
 
 class AttendancePrismaRepository implements IAttendanceRepository {
@@ -26,8 +27,18 @@ class AttendancePrismaRepository implements IAttendanceRepository {
 
     await prisma.attendances.delete({ where: { id } });
   }
+  async findAllByPatientId(patientId: string): Promise<Attendance[]> {
+    const attendances = await prisma.attendances.findMany({
+      where: { patientId },
+    });
+
+    if (!attendances)
+      throw new AppError("Invalid id or Patient Don`t exist", 404);
+
+    return attendances as Attendance[];
+  }
 }
 
-const attendancePrismaRepository = new AttendancePrismaRepository()
+const attendancePrismaRepository = new AttendancePrismaRepository();
 
 export { attendancePrismaRepository };

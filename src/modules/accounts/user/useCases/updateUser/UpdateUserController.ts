@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import { updateUserDto } from "../../model/dto/createUser.dto";
+import { userPrismaRepository } from "../../repositories/prisma/UserPrismaRepository";
 import { UpdateUserUseCase } from "./UpdateUserUseCase";
 
 export class UpdateUserController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const updateUserUseCase = new UpdateUserUseCase();
+    const updateUserUseCase = new UpdateUserUseCase(userPrismaRepository);
     const { id, name, password } = req.body as updateUserDto;
 
     await updateUserUseCase.execute({ id, name, password });

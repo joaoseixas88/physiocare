@@ -40,17 +40,25 @@ class PatientPrismaRepository implements IPatientRepository {
   }
 
   async findAllByUserId(id: string): Promise<Patient[]> {
-    const user = await prisma.user.findUnique({ where: { id }, include: {patients: true} });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+				patients: {
+					include: {
+						attendances: true
+					}
+				}
+			}
+    });
 
-		if (!user) throw new AppError("User not found", 404);
+    if (!user) throw new AppError("User not found", 404);
 
-		const patients = user.patients
+    const patients = user.patients
 
-		return patients as Patient[]
-		
+    return patients as Patient[];
   }
 }
 
 const patientPrismaRepository = new PatientPrismaRepository();
 
-export { PatientPrismaRepository, patientPrismaRepository };
+export { patientPrismaRepository };

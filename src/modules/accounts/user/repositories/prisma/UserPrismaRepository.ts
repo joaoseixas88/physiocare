@@ -41,4 +41,6 @@ class UserPrismaRepository implements IUserRepository {
   }
 }
 
-export { UserPrismaRepository };
+const userPrismaRepository = new UserPrismaRepository()
+
+export { userPrismaRepository };

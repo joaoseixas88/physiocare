@@ -1,17 +1,22 @@
 import { Patient } from "../../model/Patient";
-import { PatientPrismaRepository } from "../../repositories/prisma/PatientPrismaRepository";
+import { IPatientRepository } from "../../repositories/IPatientRepository";
 
 export class CreatePatientUseCase {
-  async execute({ age, name, price, userId }: createPatientDto): Promise<Patient> {
-    const patientRepository = new PatientPrismaRepository();
+  constructor(private repository: IPatientRepository) {}
 
-    const patient = await patientRepository.create({
+  async execute({
+    age,
+    name,
+    price,
+    userId,
+  }: createPatientDto): Promise<Patient> {
+    const patient = await this.repository.create({
       age,
       name,
       price,
       userId,
     });
 
-		return patient
+    return patient;
   }
 }
