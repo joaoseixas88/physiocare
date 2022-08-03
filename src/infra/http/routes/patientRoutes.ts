@@ -4,13 +4,13 @@ import { FindAllByUserIdController } from "../../../modules/patients/useCases/fi
 import { FindPatientByIdController } from "../../../modules/patients/useCases/findPatientById/FindPatientByIdController";
 
 const createPatientController = new CreatePatientController();
-const findPatientByIdController = new FindPatientByIdController()
-const findAllByUserIdController = new FindAllByUserIdController()
+const findPatientByIdController = new FindPatientByIdController();
+const findAllByUserIdController = new FindAllByUserIdController();
 
 const patientRoutes = Router();
 
 patientRoutes.post("/create", createPatientController.handle);
-patientRoutes.get('/:id',  findPatientByIdController.handle)
-patientRoutes.get('/all/:id', findAllByUserIdController.handle)
+patientRoutes.get("/patient/:id", findPatientByIdController.handle);
+patientRoutes.get("/all", findAllByUserIdController.handle);
 
 export { patientRoutes };

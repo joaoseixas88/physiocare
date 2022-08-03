@@ -28,6 +28,12 @@ class AttendancePrismaRepository implements IAttendanceRepository {
     await prisma.attendances.delete({ where: { id } });
   }
   async findAllByPatientId(patientId: string): Promise<Attendance[]> {
+    const patientExists = await prisma.patient.findUnique({
+      where: { id: patientId },
+    });
+
+    if (!patientExists) throw new AppError("Patient not found", 404);
+
     const attendances = await prisma.attendances.findMany({
       where: { patientId },
     });

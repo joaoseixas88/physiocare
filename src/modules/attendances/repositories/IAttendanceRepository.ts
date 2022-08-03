@@ -1,7 +1,7 @@
-import { Attendance } from "../model/Attendance"
+import { Attendance } from "../model/Attendance";
 
-export interface IAttendanceRepository{
-	create(patientId: string): Promise<void>
-	delete(id: string): Promise<void>
-	findAllByPatientId(patientId: string): Promise<Attendance[]>
+export interface IAttendanceRepository {
+  create(patientId: string, userId: string): Promise<void>;
+  delete(id: string): Promise<void>;
+  findAllByPatientId(patientId: string): Promise<Attendance[]>;
 }

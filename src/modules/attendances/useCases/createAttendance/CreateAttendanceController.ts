@@ -4,9 +4,12 @@ import { CreateAttendanceUseCase } from "./CreateAttendanceUseCase";
 
 export class CreateAttendanceController {
   async handle(req: Request, res: Response): Promise<Response> {
+    const userId = req.user.id;
     const { patientId } = req.params;
 
-    const createAttendanceUseCase = new CreateAttendanceUseCase(attendancePrismaRepository);
+    const createAttendanceUseCase = new CreateAttendanceUseCase(
+      attendancePrismaRepository
+    );
 
     await createAttendanceUseCase.execute(patientId);
 

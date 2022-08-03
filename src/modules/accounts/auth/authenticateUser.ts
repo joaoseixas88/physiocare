@@ -25,7 +25,7 @@ export async function authenticateUser(req: Request, res: Response) {
   if (!verifiedPassword) throw new AppError("Email or Password incorrect", 400);
 
   const token = sign({}, auth.jwt_secret, {
-    expiresIn: "15m",
+    expiresIn: "1d",
     subject: user.id,
   });
 

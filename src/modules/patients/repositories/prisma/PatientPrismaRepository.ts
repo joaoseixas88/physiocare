@@ -10,6 +10,10 @@ class PatientPrismaRepository implements IPatientRepository {
     price,
     userId,
   }: createPatientDto): Promise<Patient> {
+    const userExists = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!userExists) throw new AppError("User not found", 404);
+
     const patient = await prisma.patient.create({
       data: {
         age,
@@ -22,6 +26,7 @@ class PatientPrismaRepository implements IPatientRepository {
 
     return patient as Patient;
   }
+
   async findPatientById(id: string): Promise<Patient> {
     const patientExists = await prisma.patient.findUnique({
       where: {
@@ -34,8 +39,6 @@ class PatientPrismaRepository implements IPatientRepository {
 
     if (!patientExists) throw new AppError("Patient not found", 404);
 
-    console.log(patientExists);
-
     return patientExists as Patient;
   }
 
@@ -43,17 +46,17 @@ class PatientPrismaRepository implements IPatientRepository {
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
-				patients: {
-					include: {
-						attendances: true
-					}
-				}
-			}
+        patients: {
+          include: {
+            attendances: true,
+          },
+        },
+      },
     });
 
     if (!user) throw new AppError("User not found", 404);
 
-    const patients = user.patients
+    const patients = user.patients;
 
     return patients as Patient[];
   }
