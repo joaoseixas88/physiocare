@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  database:
+    image: postgres:latest
+    container_name: database
+    hostname: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=seixas
+      - POSTGRES_DB=physio
+    volumes:
+      - pgdata:/data/postgres
+  app:
+    build: .
+    container_name: physiocare
+    ports:
+      - 3000:3000
+      - 9229:9229
+    
+    volumes:
+      - .:/user/app
+    depends_on:
+      - database
+      
+volumes:
+  pgdata:
+    driver: local
