@@ -4,9 +4,10 @@ import { Attendance } from "../../model/Attendance";
 import { IAttendanceRepository } from "../IAttendanceRepository";
 
 class AttendancePrismaRepository implements IAttendanceRepository {
-  async create(patientId: string): Promise<void> {
+  async create(patientId: string, userId: string): Promise<void> {
     const patientExists = await prisma.patient.findUnique({
       where: { id: patientId },
+      include: { user: true },
     });
     if (!patientExists) throw new AppError("Patient not found", 404);
     await prisma.attendances.create({
