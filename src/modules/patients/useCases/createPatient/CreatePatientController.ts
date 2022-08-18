@@ -5,10 +5,10 @@ import { CreatePatientUseCase } from "./CreatePatientUseCase";
 
 export class CreatePatientController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { age, name, price } = req.body;
+    const { age, name, price, weekDays } = req.body;
     const { id: userId } = req.user;
 
-    if (!age || !name || !price || !userId) throw new AppError("Bad request");
+    if (!age || !name || !price || !userId || !weekDays) throw new AppError("Bad request");
 
     const createPatientUseCase = new CreatePatientUseCase(
       patientPrismaRepository
@@ -19,6 +19,7 @@ export class CreatePatientController {
       name,
       price,
       userId,
+			weekDays
     });
 
     return res.status(201).json(result);

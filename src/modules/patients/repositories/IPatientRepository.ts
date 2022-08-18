@@ -1,3 +1,5 @@
+import { patient } from "@prisma/client";
+import { createPatientDto } from "../model/dto/createPatient.dto";
 import { Patient } from "../model/Patient";
 
 export interface IPatientRepository {

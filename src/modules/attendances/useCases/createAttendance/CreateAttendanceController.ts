@@ -11,7 +11,7 @@ export class CreateAttendanceController {
       attendancePrismaRepository
     );
 
-    await createAttendanceUseCase.execute(patientId);
+    await createAttendanceUseCase.execute(patientId,userId);
 
     return res.status(201).send();
   }

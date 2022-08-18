@@ -1,9 +1,12 @@
+import { WeekDays } from "../Patient"
 
 
-interface createPatientDto{
+
+export interface createPatientDto {
 	name: string
 	age: number
 	price: number
-	userId: string	
+	userId: string
+	weekDays: WeekDays
 }
 

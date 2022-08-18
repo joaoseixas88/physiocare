@@ -19,7 +19,7 @@ export async function ensureAuthenticated(
       id: userId as string,
     };
   } catch (error) {
-    console.log(error);
+    
 
     throw new AppError("Invalid token");
   }

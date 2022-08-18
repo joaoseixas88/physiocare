@@ -35,18 +35,25 @@ class UserPrismaRepository implements IUserRepository {
   }
 
   async update({ id, name, password }: updateUserDto): Promise<void> {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-		if(!user) throw new AppError("User not found",404);
-
-		await prisma.user.update({
-			where: { id },
-			data: { name, password}
-		})
-  }
+		try {
+			const user = await prisma.user.findUnique({
+				where: {
+					id,
+				},
+			});
+			if(!user) throw new AppError("User not found",404);
+	
+			await prisma.user.update({
+				where: { id },
+				data: { name, password}
+			})
+		}
+		 catch (error: any) {
+			console.error(error)
+			throw new AppError(error.message)
+		}
+    
+}
 }
 
 const userPrismaRepository = new UserPrismaRepository()

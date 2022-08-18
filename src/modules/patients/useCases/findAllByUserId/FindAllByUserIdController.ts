@@ -5,7 +5,7 @@ import { FindAllByUserIdUseCase } from "./FindAllByUserIdUseCase";
 export class FindAllByUserIdController {
   async handle(req: Request, res: Response): Promise<Response> {
     const { id } = req.user;
-    console.log(id);
+    
     const findAllByUserIdUseCase = new FindAllByUserIdUseCase(
       patientPrismaRepository
     );

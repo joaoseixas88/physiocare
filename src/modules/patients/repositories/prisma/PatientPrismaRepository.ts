@@ -1,65 +1,97 @@
+import { patient } from "@prisma/client";
 import { prisma } from "../../../../db/prisma";
 import { AppError } from "../../../../error/AppError";
+import { Attendance } from "../../../attendances/model/Attendance";
+import { createPatientDto } from "../../model/dto/createPatient.dto";
 import { Patient } from "../../model/Patient";
 import { IPatientRepository } from "../IPatientRepository";
 
 class PatientPrismaRepository implements IPatientRepository {
-  async create({
-    age,
-    name,
-    price,
-    userId,
-  }: createPatientDto): Promise<Patient> {
-    const userExists = await prisma.user.findUnique({ where: { id: userId } });
+	async create({
+		age,
+		name,
+		price,
+		userId,
+		weekDays
+	}: createPatientDto): Promise<Patient> {
+		const userExists = await prisma.user.findUnique({ where: { id: userId } });
 
-    if (!userExists) throw new AppError("User not found", 404);
+		if (!userExists) throw new AppError("User not found", 404);
 
-    const patient = await prisma.patient.create({
-      data: {
-        age,
-        name,
-        created_at: new Date(),
-        price,
-        userId,
-      },
-    });
+		const patient = await prisma.patient.create({
+			data: {
+				age,
+				name,
+				created_at: new Date(),
+				price,
+				userId,
+				weekDays: JSON.stringify(weekDays)
+			},
+		});
 
-    return patient as Patient;
-  }
+		const formattedPatient: Patient = {
+			...patient,
+			weekDays: JSON.parse(patient.weekDays),
+			attendances: []
 
-  async findPatientById(id: string): Promise<Patient> {
-    const patientExists = await prisma.patient.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        attendances: true,
-      },
-    });
+		}
 
-    if (!patientExists) throw new AppError("Patient not found", 404);
 
-    return patientExists as Patient;
-  }
+		return formattedPatient
+	}
 
-  async findAllByUserId(id: string): Promise<Patient[]> {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        patients: {
-          include: {
-            attendances: true,
-          },
-        },
-      },
-    });
+	async findPatientById(id: string): Promise<Patient> {
+		const patientExists = await prisma.patient.findUnique({
+			where: {
+				id,
+			},
+			include: {
+				attendances: true,
+			},
+		});
 
-    if (!user) throw new AppError("User not found", 404);
+		if (!patientExists) throw new AppError("Patient not found", 404);
 
-    const patients = user.patients;
+		const formattedPatient: Patient = {
+			...patientExists,
+			weekDays: JSON.parse(patientExists.weekDays),
+			attendances: patientExists.attendances as Attendance[]		
 
-    return patients as Patient[];
-  }
+		}
+
+		return formattedPatient
+	}
+
+	async findAllByUserId(id: string): Promise<Patient[]> {
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: {
+				patients: {
+					include: {
+						attendances: true,
+					},
+				},
+			},
+		});
+
+		if (!user) throw new AppError("User not found", 404);
+
+
+		user
+
+		const patients = user.patients;
+		const formattedPatients = patients.map(patient => {
+			return {
+				...patient,
+				weekDays: JSON.parse(patient.weekDays),
+				attendances: patient.attendances as Attendance[]
+			}
+		})
+
+
+
+		return formattedPatients
+	}
 }
 
 const patientPrismaRepository = new PatientPrismaRepository();

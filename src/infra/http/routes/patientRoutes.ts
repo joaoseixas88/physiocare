@@ -9,8 +9,8 @@ const findAllByUserIdController = new FindAllByUserIdController();
 
 const patientRoutes = Router();
 
-patientRoutes.post("/create", createPatientController.handle);
-patientRoutes.get("/patient/:id", findPatientByIdController.handle);
+patientRoutes.post("/register", createPatientController.handle);
+patientRoutes.get("/get-one/:id", findPatientByIdController.handle);
 patientRoutes.get("/all", findAllByUserIdController.handle);
 
 export { patientRoutes };
