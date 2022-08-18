@@ -6,10 +6,12 @@ import { Attendance } from "../../model/Attendance";
 import { IAttendanceRepository } from "../IAttendanceRepository";
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import { filterPatientAttendancesByMonthAndYearDto, findAllByMonthAndYearDto } from "../../model/dto/attendances-dtos";
 
 dayjs.extend(isBetween)
 
 class AttendancePrismaRepository implements IAttendanceRepository {
+
 
 
 	async create(patientId: string, userId: string): Promise<void> {
@@ -93,8 +95,6 @@ class AttendancePrismaRepository implements IAttendanceRepository {
 			const startDate = dayjs(`${year}-${month}-01`).startOf('month')
 			const endDate = dayjs(startDate).endOf('month')
 
-
-
 			const attendances = await this.findAllByUserId(userId)
 
 			const filteredAttendances = attendances.filter(attendance => dayjs(attendance.created_at).isBetween(startDate, endDate))
@@ -106,6 +106,21 @@ class AttendancePrismaRepository implements IAttendanceRepository {
 
 			throw new AppError(error.message)
 		}
+
+	}
+
+
+	async filterPatientAttendancesByMonthAndYear({ month, patientId, year }: filterPatientAttendancesByMonthAndYearDto): Promise<Attendance[]> {
+
+		const startDate = dayjs(`${year}-${month}-01`).startOf('month')
+		const endDate = dayjs(startDate).endOf('month')
+
+
+		const attendances = await this.findAllByPatientId(patientId)
+
+		const filteredAttendances = attendances.filter(attendance => dayjs(attendance.created_at).isBetween(startDate, endDate))
+
+		return filteredAttendances
 
 	}
 }

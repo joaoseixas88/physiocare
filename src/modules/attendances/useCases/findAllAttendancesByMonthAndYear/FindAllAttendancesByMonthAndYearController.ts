@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { findAllByMonthAndYearDto } from '../../model/dto/attendances-dtos';
 import { attendancePrismaRepository } from '../../repositories/prisma/AttendancePrismaRepository';
 import { FindAllAttendancesByMonthAndYearUseCase } from './FindAllAttendancesByMonthAndYearUseCase';
 
